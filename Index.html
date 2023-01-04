@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+	<img class="image" src="1.png" draggable="false" />
+	<img class="image" src="2.png" draggable="false" />
+	<img class="image" src="3.png" draggable="false" />
+	<img class="image" src="4.png" draggable="false" />
+	<img class="image" src="5.jpg" draggable="false" />
+	<img class="image" src="6.png" draggable="false" />
+	<img class="image" src="7.png" draggable="false" />	
+	<img class="image" src="8.png" draggable="false" />
+</div>
+
+<style>
+body {
+	height: 100vh;
+	width: 100vw;
+	background-color: black;
+	margin: 0rem;
+	overflow: hidden;
+}
+#image-track > .image {
+	width: 40vmin;
+	height: 56vmin;
+	background-color: white;
+	object-fit: cover;
+	object-position: 100% 50%;
+}
+#image-track {
+	display: flex;
+	gap: 4vmin;
+	position: absolute; left: 50%; top: 50%; transform: translate(0%, -50%);
+	user-select: none;
+}
+</style>
+<script>
+	const track = document.getElementById("image-track");	
+
+	window.onmousedown = e => {
+		track.dataset.mouseDownAt = e.clientX;
+	}
+	window.onmousemove = e => {
+		if(track.dataset.mouseDownAt === "0") return;
+
+		const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX;
+		const maxDelta = window.innerWidth / 2;
+
+		const percentage = (mouseDelta / maxDelta) * -100;
+		const nextPercentageUnconstrained = parseFloat(track.dataset.prevPercentage) + percentage;
+		nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
+		track.dataset.percentage = nextPercentage;
+
+		<!-- track.style.transform = `translate(${nextPercentage}%, -50%)`;-->
+		track.animate({
+			transform: `translate(${nextPercentage}%, -50%)`
+		}, {duration: 600, fill: "forwards" });
+
+
+		for(const image of track.getElementsByClassName("image")) {
+			<!--image.style.objectPosition = `${nextPercentage + 100}% 50%`;-->
+			image.animate({
+				objectPosition: `${100 + nextPercentage}% center`
+			}, {duration: 600, fill: "forwards" });
+		}
+
+
+	}
+	window.onmouseup = () => {
+		track.dataset.mouseDownAt = "0";
+		track.dataset.prevPercentage = track.dataset.percentage;
+	}
+</script> 
+</body>
+</html>
