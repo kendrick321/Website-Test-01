@@ -1,77 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+    var view = 0;
+    var currentPosition = 0;    
+</script>
 </head>
 <body>
-<div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
-	<img class="image" src="1.JPG" draggable="false" />
-	<img class="image" src="2.JPG" draggable="false" />
-	<img class="image" src="3.JPG" draggable="false" />
-	<img class="image" src="4.JPG" draggable="false" />
-	<img class="image" src="5.JPG" draggable="false" />
-	<img class="image" src="6.JPG" draggable="false" />
-	<img class="image" src="7.JPG" draggable="false" />	
-	<img class="image" src="8.JPG" draggable="false" />
+<div id="image-track" class="move-to-percentage" data-mouse-down-at="0" data-prev-percentage="0">
+    <img id="image1" class="image active" src="8.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="2.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="3.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="4.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="5.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="6.JPG" draggable="false" onclick="toggleView(this)"/>
+    <img class="image active" src="7.JPG" draggable="false" onclick="toggleView(this)"/>    
+    <img class="image active" src="1.JPG" draggable="false" onclick="toggleView(this)"/>
 </div>
 
 <style>
 body {
-	height: 100vh;
-	width: 100vw;
-	background-color: black;
-	margin: 0rem;
-	overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    margin: 0rem;
+    overflow: hidden;
 }
 #image-track > .image {
-	width: 40vmin;
-	height: 56vmin;
-	background-color: white;
-	object-fit: cover;
-	object-position: 100% 50%;
+    width: 40vmin;
+    height: 56vmin;
+    background-color: white;
+    object-fit: cover;
+    object-position: 100% 50%;
 }
 #image-track {
-	display: flex;
-	gap: 4vmin;
-	position: absolute; left: 50%; top: 50%; transform: translate(0%, -50%);
-	user-select: none;
+    display: flex;
+    border: 1px solid white;
+    box-sizing: border-box;
+    gap: 4vmin;
+    position: absolute; left: 50%; top: 50%; transform: translate(0%, -50%);
+    user-select: none;
+}
+.hidden {
+    display: none;
+}
+.move-to-percentage {
+    transform: translate(var(--next-percentage), -50%);
+    transition: transform 0.2s ease-in-out;
 }
 </style>
 <script>
-	const track = document.getElementById("image-track");	
+    let mouseMoved = false;
+    const track = document.getElementById("image-track");
 
-	window.onmousedown = e => {
-		track.dataset.mouseDownAt = e.clientX;
-	}
-	window.onmousemove = e => {
-		if(track.dataset.mouseDownAt === "0") return;
+function toggleView(image) {
+	if(mouseMoved === true) return;
+    if(view === 1) {
+        for(const img of track.getElementsByClassName("image")) {
+            img.classList.remove("hidden");
+            img.style.transition = "all 600ms";
+            img.style.width = '40vmin';
+            img.style.height = '56vmin';
+            img.style.objectPosition = '100% 50%';
+        }
+        track.style.transition = "all 600ms";
+        track.style.transform = `translate(${currentPosition}%, -50%)`;
+        track.style.width = "min-content"
+        track.style.height = "min-content"	
+        view = 0;
+    } else {
+        for(const img of track.getElementsByClassName("image")) {
+            if(img !== image) {
+                img.classList.add("hidden");
+            }
+        }
+        currentPosition = parseFloat(track.dataset.percentage);
+        view = 1;
+	    track.style.position = "absolute";
+            track.style.top = "50%";
+            track.style.left = "50%";
+            track.style.transform = "translate(-50%, -50%)";
+	    track.style.height = "100vh";    
+	    track.style.width = "100vw";
 
-		const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX;
-		const maxDelta = window.innerWidth / 2;
+            track.style.transition = "all 0.6s ease-in-out"
+  
 
-		const percentage = (mouseDelta / maxDelta) * -100;
-		const nextPercentageUnconstrained = parseFloat(track.dataset.prevPercentage) + percentage;
-		nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
-		track.dataset.percentage = nextPercentage;
-
-		<!-- track.style.transform = `translate(${nextPercentage}%, -50%)`;-->
-		track.animate({
-			transform: `translate(${nextPercentage}%, -50%)`
-		}, {duration: 600, fill: "forwards" });
+            //track.style.transition = "all 0.6s ease-in-out";
+        setTimeout(function() {
 
 
-		for(const image of track.getElementsByClassName("image")) {
-			<!--image.style.objectPosition = `${nextPercentage + 100}% 50%`;-->
-			image.animate({
-				objectPosition: `${100 + nextPercentage}% center`
-			}, {duration: 600, fill: "forwards" });
-		}
 
+	    //track.style.height = "100vh";    
+	    //track.style.width = "100vw";         
+            //image.style.transition = "all 0.6s ease-in-out";
+            //track.style.transition = "all 0.6s ease-in-out";
+        }, 1000);
+    }
+}
 
-	}
-	window.onmouseup = () => {
-		track.dataset.mouseDownAt = "0";
-		track.dataset.prevPercentage = track.dataset.percentage;
-	}
-</script> 
+window.onmousedown = e => {
+        track.dataset.mouseDownAt = e.clientX;
+	mouseMoved = false;
+    }
+window.onmousemove = e => {
+	mouseMoved = true;
+    if(track.dataset.mouseDownAt === "0") return;
+    if(view === 1) return;
+
+    const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX;
+    const maxDelta = window.innerWidth / 2;
+
+    const percentage = (mouseDelta / maxDelta) * -100;
+    const nextPercentageUnconstrained = parseFloat(track.dataset.prevPercentage) + percentage;
+    nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
+    track.dataset.percentage = nextPercentage;
+
+    updateTrackPosition();
+    
+
+    for(const image of track.getElementsByClassName("image")) {
+        image.style.animation = "move-object-position 0.6s ease-in-out";
+        image.style.animationFillMode = "forwards";
+        image.style.objectPosition = `${100 + nextPercentage}% center`;
+    }
+}
+    window.onmouseup = () => {
+        track.dataset.mouseDownAt = "0";
+        track.dataset.prevPercentage = track.dataset.percentage;
+    }
+function updateTrackPosition() {
+    track.classList.remove("move-to-percentage");
+    void track.offsetWidth; // trigger reflow
+    track.classList.add("move-to-percentage");
+    track.style.setProperty(`--next-percentage`, nextPercentage);
+    track.style.transform = `translate(${nextPercentage}%, -50%)`;
+}
+
+</script>
 </body>
 </html>
