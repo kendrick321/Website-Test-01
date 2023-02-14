@@ -82,13 +82,21 @@ function toggleView(image) {
         var jvh = window.innerHeight;
         var jvw = window.innerWidth;
         var jvmin = Math.min(jvh, jvw);
+<<<<<<< Updated upstream
         var newHeight = jvmin * oriWidth / oriHeight / 5;
+=======
+        var newHeight = jvmin * oriWidth / oriHeight;
+>>>>>>> Stashed changes
         //System.out.println(newHeight)
         //imageElement.setAttribute("data-new-height", newHeight);
 
 
         image.style.cssText = `
+<<<<<<< Updated upstream
             transition: height 3.6s ease-in-out, width 3.6s ease-in-out; 
+=======
+            transition: height 0.6s ease-in-out, width 0.6s ease-in-out; 
+>>>>>>> Stashed changes
             height: 100vmin;
             width: ${newHeight}vmin;
         `
