@@ -52,7 +52,7 @@ body {
 <script>
     let mouseMoved = false;
     const track = document.getElementById("image-track");
-import java.lang.System;
+    //import java.lang.System;
 function toggleView(image) {
 	if(mouseMoved === true) return;
     if(view === 1) {
@@ -76,26 +76,56 @@ function toggleView(image) {
         }
         currentPosition = parseFloat(track.dataset.percentage);
         view = 1;
-	    track.style.position = "absolute";
-            track.style.top = "50%";
-            track.style.left = "50%";
-            track.style.transform = "translate(-50%, -50%)";
-	    track.style.height = "100vh";    
-	    track.style.width = "100vw";
+    
+        var oriHeight = image.height;
+        var oriWidth = image.width;
+        var jvh = window.innerHeight;
+        var jvw = window.innerWidth;
+        var jvmin = Math.min(jvh, jvw);
+        var newHeight = jvmin * oriWidth / oriHeight / 5;
+        //System.out.println(newHeight)
+        //imageElement.setAttribute("data-new-height", newHeight);
 
-            track.style.transition = "all 0.6s ease-in-out"
-  
 
-            //track.style.transition = "all 0.6s ease-in-out";
+        image.style.cssText = `
+            transition: height 3.6s ease-in-out, width 3.6s ease-in-out; 
+            height: 100vmin;
+            width: ${newHeight}vmin;
+        `
+
+        // track.style.cssText = `
+        //     transition: all 0.6s ease-in-out;
+        //     position: absolute;
+        //     top: 50%;
+        //     left: 50%;
+        //     transform: translate(-50%, -50%);
+        // `
+        
+        // setTimeout(() => {
+        //     track.style.height = "100vh";
+        //     track.style.width = "100vw";
+        //     track.style.transition = "height 2.6s, width 2.6s";
+        // }, 1000);
+
+	    // track.style.position = "absolute";
+        // track.style.top = "50%";
+        // track.style.left = "50%";
+        // track.style.transform = "translate(-50%, -50%)";
+	    // track.style.height = "100vh";    
+	    // track.style.width = "100vw";
+        // track.style.transition = "all 2.6s ease-in-out";
+
+		// image.style.position = "absolute";
+		// image.style.top = "50%";
+    	// image.style.left = "50%";
+	 	// image.style.transform = "translate(-50%, -50%)";
+		// image.style.transition = "top left position transform 0.0s ease-in-out";
+
         setTimeout(function() {
-
-
-
-	    //track.style.height = "100vh";    
-	    //track.style.width = "100vw";         
-            //image.style.transition = "all 0.6s ease-in-out";
-            //track.style.transition = "all 0.6s ease-in-out";
-        }, 1000);
+			// image.style.height = "100vh";
+			// image.style.width = "auto";
+			// image.style.transition = "all 2.6s ease-in-out"
+        }, 3000);
     }
 }
 
